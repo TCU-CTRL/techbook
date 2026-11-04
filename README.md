@@ -56,19 +56,25 @@ PDFや補助ファイルはGit管理対象外です。
 ## 紙面サンプル
 
 サンプル原稿から生成したA5判・1段組の紙面です。記事タイトル・著者名・紹介文をまとめた冒頭と、モノクロの見出し・コード欄を共通デザインにしています。
-日本語の本文、行番号付きのPythonコード、数式・定理の組版を確認できます。
+記事は「スクショの迷子を探す」と「部室BGM、またこの曲？」の2本です。
+身近な困りごとから、小さな道具を作ったり、欲しい動作を考え直したりする内容にしています。
+場面・筆者・ファイル例は架空のサンプルです。
 
 | 表紙 | 目次 |
 | --- | --- |
 | ![表紙](docs/screenshots/01-cover.png) | ![目次](docs/screenshots/02-contents.png) |
 
-| Pythonコード | 数式・定理 |
+| スクショ整理の小さな道具 | BGMの選び方と確率 |
 | --- | --- |
-| ![Pythonコードの紙面](docs/screenshots/03-python.png) | ![数式・定理の紙面](docs/screenshots/05-math.png) |
+| ![スクショの迷子を探す記事](docs/screenshots/03-python.png) | ![部室BGMと選曲の確率を考える記事](docs/screenshots/05-math.png) |
 
-| 表 | 図・参考文献 |
+| Pythonの実装 | 図・選曲の工夫 |
 | --- | --- |
-| ![表の紙面](docs/screenshots/04-table.png) | ![図と参考文献の紙面](docs/screenshots/06-figure-and-references.png) |
+| ![画像名の一覧を作るPythonコード](docs/screenshots/07-python-code.png) | ![曲の並べ替えと再生の流れ](docs/screenshots/06-shuffle.png) |
+
+| 画像候補と制作メモ | 記事の着地点・参考文献 |
+| --- | --- |
+| ![架空の画像候補をまとめた表と制作メモ](docs/screenshots/04-table.png) | ![次に試したいことと参考文献](docs/screenshots/08-references.png) |
 
 ## 共同執筆の進め方
 

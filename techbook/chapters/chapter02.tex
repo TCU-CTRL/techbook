@@ -1,49 +1,76 @@
-\chapter{アルゴリズムと数式}
+\chapter{部室BGM、またこの曲？}
 \label{chap:algorithm}
 \chapterauthor{\AuthorTwo}
-\chapterlead{プログラムで求めた合計を、今度は数式で眺めてみます。
-三角数を題材に、定義・証明・図を組み合わせた説明を試します。}
+\chapterlead{ランダム再生にしたのに、さっきの曲がまた流れる。
+「乱数が壊れた？」と思う前に、欲しかった再生順を考えてみます。}
 
-\section{総和を数式で表す}
-第\ref{chap:python}章の処理は、インライン数式 $S_n=1+2+\cdots+n$ で表せます。
-\begin{definition}[三角数]
-  正の整数 $n$ に対し、$T_n=\sum_{k=1}^{n}k$ を第$n$三角数と呼びます。
+\section{ランダムなら、ばらけると思っていた}
+短いプレイリストを作って、次の曲を毎回くじ引きで選ぶ。
+これで気分よく作業できるはずです。ところが、同じ曲が続くと
+つい再生ボタンを二度見してしまいます。
+
+ここでは、仮想のBGMプレイヤーを題材にします。
+曲は全部で$N$曲、毎回どの曲も同じ確率で選び、前の結果とは独立に
+次の曲を決めるものとします。曲を一度選んでも、候補からは外しません。
+Pythonなら\texttt{random.choice}を繰り返す方法に対応します\cite{python:random}。
+
+\begin{definition}[この記事の「かぶり」]
+  直前と同じ曲が続けて選ばれることを、かぶりと呼びます。
+  間に別の曲を挟んだ再登場は、ここでは数えません。
 \end{definition}
-\begin{theorem}
-  三角数は次の式で求められます。
-  \begin{equation}
-    T_n=\frac{n(n+1)}{2}.
-    \label{eq:triangular}
-  \end{equation}
-\end{theorem}
-\begin{proof}
-  同じ和を逆順にも並べて加えると、各組の和は $n+1$ です。
-  \begin{align}
-    2T_n &= (1+n)+(2+(n-1))+\cdots+(n+1) \\
-         &= n(n+1).
-  \end{align}
-  両辺を2で割れば式\eqref{eq:triangular}を得ます。
-\end{proof}
-番号を付けない別行立て数式も利用できます。
-\[
-  T_5=\frac{5\cdot6}{2}=15
-\]
 
-\section{処理の流れを図にする}
-図\ref{fig:flow}はLaTeXの枠と矢印だけで作った図です。
+\section{3曲を5回選ぶだけでも}
+直前と違う曲を引く確率は $q=(N-1)/N$ です。
+最初の1曲には比較相手がないので、$m$回の選曲では隣り合う箇所が$m-1$個あります。
+どこでもかぶらない確率を先に求め、その反対を取ると、
+\begin{equation}
+  P(\text{少なくとも一度かぶる})
+    =1-\left(\frac{N-1}{N}\right)^{m-1}
+  \label{eq:repeat-probability}
+\end{equation}
+となります。$N\geq2$、$m\geq2$を考えています。
+
+たとえば3曲から5回選ぶ場合、式\eqref{eq:repeat-probability}はこうなります。
+\begin{align}
+  P &= 1-\left(\frac{2}{3}\right)^4 \\
+    &= \frac{65}{81}\approx 0.802.
+\end{align}
+約80\%です。これは実測値ではなく、この選び方から計算した確率です。
+「また同じ曲！」は、少なくともこの小さな例では珍しい出来事ではありません。
+
+曲数を増やすと、次の1曲がかぶる確率は小さくなります。
+\[
+  P(\text{次の曲が直前と同じ})=\frac{1}{N}
+\]
+ただし、長く聴けば比較する回数も増えます。
+曲数だけ見て「今日は絶対かぶらない」とは言えないわけです。
+
+\section{欲しかったのは、一周するまで別の曲}
+どうやら欲しかった動作は、こちらでした。
+\begin{quote}
+  全曲を一度ずつ聴いてから、もう一度順番を決めたい。
+\end{quote}
+そこで、全曲のリストを\texttt{random.shuffle}で並べ替え、
+先頭から順に再生する方法にします\cite{python:random}。
+図\ref{fig:shuffle-bag}のように、曲を選ぶ処理と、順番を消費する処理を分けます。
+
 \begin{figure}[htbp]
   \centering
-  \fbox{入力：$n$}\enspace$\longrightarrow$\enspace
-  \fbox{計算：$n(n+1)/2$}\enspace$\longrightarrow$\enspace
-  \fbox{出力：$T_n$}
-  \caption{三角数を求める処理の流れ}
-  \label{fig:flow}
+  \fbox{全曲のリスト}\enspace$\longrightarrow$\enspace
+  \fbox{並べ替え}\enspace$\longrightarrow$\enspace
+  \fbox{先頭から再生}
+  \caption{毎回くじを引かず、再生する順番を先に作る}
+  \label{fig:shuffle-bag}
 \end{figure}
 
-\subsection{参考資料を示す}
-数式を説明するときも、出典を明示しましょう。
-本書の日本語組版にはjlreq\cite{ref:jlreq}を使用しています。
-\begin{quote}
-  ここには引用文を記載し、出典と該当ページを添えます。
-  この文章自体は引用の書式を示すための例文です。
-\end{quote}
+曲の項目が重複していなければ、一周の途中で同じ曲は再登場しません。
+ただし、一周目の最後と二周目の最初が同じになることはあります。
+そこまで避けたいなら、一周のつなぎ目にも別の処理が必要です。
+
+\subsection{乱数より先に、欲しい動作を決める}
+第\ref{chap:python}章では、画像をどう整理したいのかを先に考えました。
+BGMも同じで、「ランダムにしたい」だけでは少し曖昧でした。
+毎回同じ確率で選びたいのか、全曲を一周したいのか。
+その違いを決めてから道具を選ぶと、小さな実装でも納得して使えそうです。
+
+次は曲の長さも考慮したくなりますが、それはまた別の記事に取っておきます。

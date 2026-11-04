@@ -1,53 +1,82 @@
-\chapter{Pythonによる簡単なプログラミング}
+\chapter{スクショの迷子を探す}
 \label{chap:python}
 \chapterauthor{\AuthorOne}
-\chapterlead{小さな関数を一つ作り、入力と出力を確かめてみます。
-コードと表を行き来しながら、数列の合計を求める処理を追いかけましょう。}
+\chapterlead{スクショは撮った。でも原稿に貼りたい一枚が見つからない。
+画像整理を自動化するつもりが、まずは名前を並べるだけの小さな道具になりました。}
 
-\section{小さな関数を作る}
-Pythonで数列の合計を計算してみましょう。
-コード\ref{lst:python-total}は、渡された値を順番に加算します。
-Pythonの実行環境は組版には不要です\footnote{コードは紙面に掲載するだけで、ビルド時には実行しません。}。
+\section{撮ったはずの一枚がない}
+記事を書くとき、コードより先に画像フォルダで迷うことがあります。
+\texttt{terminal2.png} と \texttt{terminal2-new.png}。
+名前だけでは、どちらが説明に使いたかった画面なのか分かりません。
+撮った直後は覚えていたはずなのに、翌日にはもう怪しい。
 
-\begin{lstlisting}[caption={数列の合計を求める関数},label={lst:python-total}]
-def total(values):
-    result = 0
-    for value in values:
-        result += value
-    return result
+原稿から参照している画像を勝手に動かすのも怖い。
+まずは「何が入っているか」を眺める道具を作ることにしました。
 
-print(total([1, 2, 3, 4, 5]))  # 15
-print("This deliberately long sample line demonstrates automatic wrapping within the code frame.")
+\section{いきなり片づけない}
+使うのはPython標準ライブラリの\texttt{pathlib}だけ\cite{python:pathlib}。
+コード\ref{lst:image-index}で、フォルダ直下の画像名を一覧にします。
+
+\begin{lstlisting}[float=htbp,caption={画像を変更せず、名前だけを一覧にする},label={lst:image-index}]
+from pathlib import Path
+
+def image_names(folder):
+    extensions = {".png", ".jpg", ".jpeg"}
+    return sorted(
+        path.name for path in Path(folder).iterdir()
+        if path.is_file()
+        and path.suffix.lower() in extensions
+    )
+
+for name in image_names("images"):
+    print(name)
 \end{lstlisting}
 
-\subsection{確認したいこと}
+\texttt{image\_index.py}に保存し、\texttt{images/}がある場所で
+\texttt{python image\_index.py}を実行します。
+ここではファイルの移動も削除もしません\footnote{画像形式は拡張子で判定しています。
+画像データの中身を検査する道具ではありません。}。
+フォルダがなければエラーになるので、名前と実行場所を確認してください。
+
+\subsection{地味だけれど、省くと困るところ}
+名前を並べるだけでも、次の三つは入れておきたくなりました。
 \begin{itemize}
-  \item 関数の役割を短い文章で説明する。
-  \item 入力と出力の例を用意する。
-  \item 空のリストのような境界条件を確認する。
+  \item \texttt{.JPG}も拾えるように、拡張子を小文字にして比較する。
+  \item 画像と同じ名前のフォルダを、ファイル扱いしない。
+  \item 一覧は名前順に並べ、見比べるときの順番を揃える。
 \end{itemize}
 
-\section{実行結果を整理する}
-表\ref{tab:python-results}に確認例を示します。
+\section{一覧ができても、採用版は決まらない}
+表\ref{tab:image-candidates}は、原稿用フォルダにありそうな架空の例です。
+一覧に出せたところで、どの画像を使うかはまだ人間の仕事でした。
+
 \begin{table}[htbp]
   \centering
-  \caption{入力と期待する合計}
-  \label{tab:python-results}
-  \begin{tabular}{lr}
+  \caption{名前を見て考えたこと（架空のファイル例）}
+  \label{tab:image-candidates}
+  \begin{tabular}{ll}
     \toprule
-    入力 & 合計 \\
+    ファイル名 & 次に確認したいこと \\
     \midrule
-    \texttt{[1, 2, 3, 4, 5]} & 15 \\
-    \texttt{[10, 20]} & 30 \\
-    \texttt{[]} & 0 \\
+    \texttt{desk.JPG} & 撮影した写真も原稿に使う？ \\
+    \texttt{terminal2-new.png} & どこを撮り直した版？ \\
+    \texttt{terminal2.png} & 今の説明と画面が合う？ \\
     \bottomrule
   \end{tabular}
 \end{table}
 
-次の順で読み直すと、説明の不足を見つけやすくなります。
+次に手を入れるなら、こんな順番がよさそうです。
 \begin{enumerate}
-  \item コードの入力を確認する。
-  \item 表とコードの出力を照合する。
-  \item 第\ref{chap:algorithm}章の数式と対応付ける。
+  \item 一覧の横に、使う章と図の説明をメモする。
+  \item 実際の画面を見て、採用する画像を決める。
+  \item ファイル名を変えるなら、原稿中の参照先も一緒に直す。
 \end{enumerate}
-Pythonの公式資料は\url{https://docs.python.org/ja/3/}を参照してください。
+
+\subsection{今日の着地点}
+立派な画像管理アプリを作ったわけではありません。
+でも、最初から全部を自動化するより、原稿を一段進める道具にはなりそうです。
+次は一覧に小さなプレビューを付けたい。そうなると、結局もう一つ道具を
+作り始めてしまう気もします。
+
+ファイル操作の詳しい仕様は\url{https://docs.python.org/ja/3/library/pathlib.html}
+を参照してください。
