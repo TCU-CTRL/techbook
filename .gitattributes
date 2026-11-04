@@ -1,0 +1,12 @@
+* text=auto
+*.tex text eol=lf
+*.md text eol=lf
+*.json text eol=lf
+*.yaml text eol=lf
+*.ps1 text eol=crlf
+*.cmd text eol=crlf
+**/Makefile text eol=lf
+**/Dockerfile text eol=lf
+**/latexmkrc text eol=lf
+**/.dockerignore text eol=lf
+**/.gitignore text eol=lf

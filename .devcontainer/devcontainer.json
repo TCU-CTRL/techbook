@@ -1,0 +1,33 @@
+{
+  "name": "TCU-CTRL Techbook",
+  "build": {
+    "dockerfile": "../techbook/Dockerfile",
+    "context": "../techbook"
+  },
+  "workspaceMount": "source=${localWorkspaceFolder},target=/workspaces/techbook,type=bind",
+  "workspaceFolder": "/workspaces/techbook",
+  "remoteUser": "writer",
+  "updateRemoteUserUID": true,
+  "overrideCommand": true,
+  "customizations": {
+    "vscode": {
+      "extensions": ["James-Yu.latex-workshop"],
+      "settings": {
+        "files.encoding": "utf8",
+        "files.eol": "\n",
+        "latex-workshop.latex.autoBuild.run": "never",
+        "latex-workshop.latex.outDir": "%DIR%/build",
+        "latex-workshop.latex.tools": [
+          {
+            "name": "techbook-latexmk",
+            "command": "latexmk",
+            "args": ["-norc", "-r", "%DIR%/latexmkrc", "-cd", "%DOC%"]
+          }
+        ],
+        "latex-workshop.latex.recipes": [
+          {"name": "Techbook (LuaLaTeX)", "tools": ["techbook-latexmk"]}
+        ]
+      }
+    }
+  }
+}

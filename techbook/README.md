@@ -7,16 +7,66 @@ TCU-CTRLの部員が各章を担当して、日本語の技術同人誌を制作
 ## 最初に行うこと
 
 1. 下記のTeX環境を用意する。
-2. ターミナルで `techbook/` に移動し、`make pdf` を実行する。
+2. `techbook/` に移動し、macOS/Linuxでは `make pdf`、Windowsのコマンドプロンプトでは `build.cmd pdf` を実行する。
 3. `build/main.pdf` をPDFビューアで開く。
 4. `metadata.tex` の仮情報と、自分が担当する `chapters/` の原稿を編集する。
-5. 再び `make pdf` を実行して確認する。文字コードはUTF-8を使用する。
+5. 同じビルドコマンドを再実行して確認する。文字コードはUTF-8を使用する。
+
+## 利用環境の選び方
+
+| 環境 | 用意するもの | PDF生成コマンド（`techbook/` 内） |
+| --- | --- | --- |
+| Windows・コマンドプロンプト | TeX Live | `build.cmd pdf` |
+| Windows・PowerShell | TeX Live | `.\build.ps1 pdf` |
+| macOS/Linux | MacTeX/TeX Live、make | `make pdf` |
+| Docker | Docker DesktopまたはDocker Engine＋Compose | `docker compose run --rm tex` |
+| VS Code Dev Container | Docker、VS Code、Dev Containers拡張 | コンテナ内で `make -C techbook pdf` |
+
+DockerとDev Containerでは、ホストにTeXやmakeをインストールする必要はありません。
+以下のネイティブ環境の導入手順は、Dockerを選んだ場合には不要です。
 
 ## 使用技術と環境構築
 
 LuaLaTeX、jlreq、latexmk、Gitを使用します。MakefileはmacOS/Linuxのmakeで動作します。
 Python、Node.js、Pygments、BibTeX、Biberはビルドに不要です。
 コード表示にはlistingsを使い、shell-escapeを無効にしています。
+
+### Windows（コマンドプロンプト）
+
+1. [TeX Liveの公式案内](https://tug.org/texlive/windows.html)からWindows用インストーラを取得し、インストールします。初めて使う場合は完全インストール（scheme-full）が確実です。
+2. Gitで作業する場合はGit for Windowsも導入し、このリポジトリをcloneします。
+3. インストール後にコマンドプロンプトを開き直し、以下を実行します。
+
+```bat
+where lualatex
+where latexmk
+lualatex --version
+latexmk -v
+cd /d C:\work\techbook\techbook
+build.cmd pdf
+start "" "build\main.pdf"
+```
+
+`C:\work\techbook` はclone先の例なので、自分の保存先に読み替えてください。
+`build.cmd` の引数省略時は `pdf` です。削除は `build.cmd clean` を実行します。
+スクリプトは自身の保存先へ移動して実行するため、他のディレクトリからフルパスで呼び出すこともできます。
+成功時は終了コード0、ビルド失敗時は非0を返します。Windows向けスクリプトにmakeは不要です。
+
+`where` で見つからない場合は、TeX Liveの `bin\windows`（例：`C:\texlive\2026\bin\windows`）がPATHに入っているか確認します。
+古いTeX Liveとの混在に注意してください。足りないTeXパッケージはTeX Live Managerで導入するか、下記の `tlmgr install` を使用します。
+
+PowerShellを使う場合も対応しています。
+
+```powershell
+cd C:\work\techbook\techbook
+.\build.ps1 pdf
+.\build.ps1 clean
+```
+
+スクリプト実行が組織のポリシー等で制限される場合は、コマンドプロンプト版を使うか、`techbook/` 内で `latexmk -norc -r latexmkrc main.tex` を直接実行してください。
+実行ポリシーの変更は不要です。
+
+### macOS/Linux
 
 macOSでは [MacTeX](https://www.tug.org/mactex/) の導入を推奨します。
 インストール後にターミナルを開き直してください。必要なら `/Library/TeX/texbin` をPATHに追加します。
@@ -61,6 +111,62 @@ makeを使わない場合は `latexmk -norc -r latexmkrc main.tex` でも同じ�
 ホームや親ディレクトリのlatexmk設定を読み込まず、この制作環境の設定を使用します。
 生成PDFや補助ファイル、フォントキャッシュをGitに追加しないでください。
 
+## Dockerでの執筆・ビルド
+
+Windows/macOSはDocker Desktopをインストール・起動します。WindowsはWSL 2バックエンドとLinuxコンテナを使用します。
+LinuxはDocker EngineとComposeプラグインを用意してください。
+`docker version` と `docker compose version` が成功することを確認してから、`techbook/` 内で実行します。
+
+```sh
+docker compose build
+docker compose run --rm tex
+```
+
+`Dockerfile` はDebian trixieを基に、LuaLaTeX、日本語フォント、jlreq、latexmk、make、Git、PDF確認用のPopplerを導入します。
+Composeは編集用の `techbook/` をコンテナの `/workspace/techbook` にマウントするため、ホストで原稿を編集して再ビルドできます。
+PDFはホスト側の `techbook/build/main.pdf` に出力されます。生成後のコンテナは自動削除されます。
+初回はイメージのダウンロード・TeXの導入・フォントキャッシュ生成に時間とディスク容量が必要です。
+
+```sh
+# 生成物を削除
+docker compose run --rm tex make clean
+
+# コンテナ内のシェルで作業（終了は exit）
+docker compose run --rm tex bash
+# コンテナ内では以下を実行
+make pdf
+```
+
+Composeは標準でUID/GID 1000の一般ユーザーを使います。Linuxホストでファイルの書き込み権限が合わない場合は、実行前に次を設定します。
+
+```sh
+export LOCAL_UID="$(id -u)"
+export LOCAL_GID="$(id -g)"
+docker compose run --rm tex
+```
+
+Windows/macOSでは通常この設定は不要です。ネイティブTeXとコンテナのTeXを切り替えるときは、先に生成物をcleanしてください。
+ベースOSのタグは固定していますが、aptのパッケージ更新でTeXの版は変わり得ます。完全に同一の環境を配布する場合は、検証済みイメージのdigest固定を検討してください。
+`.dockerignore` で生成物はイメージに含めません。PDFの成果物はGitHubにもpushしません。
+
+## VS Code Dev Container
+
+1. Dockerを起動し、VS CodeにMicrosoftの **Dev Containers** 拡張をインストールします。
+2. `techbook/` サブディレクトリではなく、`.devcontainer/` があるリポジトリのルートをVS Codeで開きます。
+3. コマンドパレットから **Dev Containers: Reopen in Container** を実行します。
+4. 初回ビルド後、VS Codeのターミナルで以下を実行します。
+
+```sh
+make -C techbook pdf
+```
+
+Dockerと同じ `techbook/Dockerfile` を使い、一般ユーザー `writer` で作業します。
+リポジトリは `/workspaces/techbook` にマウントされ、変更はホストにも保存されます。
+LaTeX Workshop拡張と専用ビルドレシピを設定しています。`techbook/main.tex` を開き、**LaTeX Workshop: Build LaTeX project** を実行してもビルドできます。
+自動ビルドは無効にしています。章ファイルだけを開いている場合は `main.tex` を開いてから実行するか、上記のターミナルコマンドを使ってください。
+PDFは `techbook/build/main.pdf` を開くとプレビューできます。
+Dockerfileや設定を更新した場合は **Dev Containers: Rebuild Container** を実行します。
+
 ### Overleaf
 
 `techbook/` の中身をプロジェクトのルートとしてアップロードし、Main documentを `main.tex`、Compilerを **LuaLaTeX** に設定します。
@@ -71,9 +177,23 @@ TeX Liveは利用可能な新しい版を選びます。Makefileは使いませ�
 ## ファイル構成（ソース全一覧）
 
 ```text
+リポジトリのルート/
+├── README.md
+├── .gitattributes            # Windowsでの改行コード
+├── .devcontainer/
+│   └── devcontainer.json     # VS Code用（共通Dockerfileを使用）
+└── techbook/                 # 以下が制作環境
+```
+
+```text
 techbook/
 ├── README.md
 ├── Makefile
+├── build.cmd                 # Windows・コマンドプロンプト用
+├── build.ps1                 # Windows・PowerShell用
+├── Dockerfile                # 共通コンテナイメージ
+├── compose.yaml              # 執筆用マウントとビルド
+├── .dockerignore
 ├── latexmkrc                  # LuaLaTeX・生成先
 ├── .gitignore                 # build/を除外
 ├── main.tex                   # 本の構成と章の一覧
@@ -271,11 +391,16 @@ jlreqが字数・行数を調整するため、実際の余白には丸めが生
 2026年11月4日、macOS・TeX Live 2026・latexmk 4.88で `make clean` 後の `make pdf` が成功しました。
 サンプルは11ページで、全ページA5（148×210mm）です。フォントの埋め込み、日本語、数式、Pythonコード、図表、目次、相互参照を確認しています。
 検証用コピーで第3章の追加と `make clean` による生成物削除も確認しました。
-LinuxとOverleafでの実ビルドは未確認です。印刷会社の入稿条件への適合は別途確認してください。
+Docker Desktop（macOS / ARM64）上のDebian trixieコンテナでも、イメージのビルド、`docker compose run --rm tex make clean`、続く `docker compose run --rm tex` に成功しました。
+コンテナ側はTeX Live 2024・latexmk 4.86で、同じく11ページのA5 PDFを生成しています。
+Dev ContainerのJSON・ビルド参照先とCompose設定を検証しました。VS Codeでの接続操作、Windows上のCMD/PowerShell実行、Overleaf、AMD64コンテナは未検証です。
+印刷会社の入稿条件への適合は別途確認してください。
 
 ## 参考資料
 
 - [jlreq公式ドキュメント](https://github.com/abenori/jlreq/blob/master/README-ja.md)
 - [LaTeXの導入案内](https://www.latex-project.org/get/)
+- [Docker Composeのサービス定義](https://docs.docker.com/reference/compose-file/services/)
+- [VS Code Dev Containerの構築](https://code.visualstudio.com/docs/devcontainers/create-dev-container)
 
 本テンプレートは上記の公開仕様を参考に独自に構成しています。

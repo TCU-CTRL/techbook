@@ -19,15 +19,35 @@
 
 ## PDFの生成
 
-TeX Live（macOSではMacTeX）、latexmk、makeを用意してください。
+TeX Live（macOSではMacTeX）とlatexmkを用意してください。
 環境構築・章追加・数式・コード・画像の掲載方法は [執筆ガイド](techbook/README.md) に記載しています。
+
+macOS/Linux（makeを使用）：
 
 ```sh
 cd techbook
 make pdf
 ```
 
-生成先は `techbook/build/main.pdf` です。`make clean` で生成物を削除できます。
+Windowsのコマンドプロンプト（makeは不要）：
+
+```bat
+cd techbook
+build.cmd pdf
+```
+
+Docker Desktopを使用する場合（ホストへのTeXインストールは不要）：
+
+```sh
+cd techbook
+docker compose build
+docker compose run --rm tex
+```
+
+VS Codeではリポジトリのルートを開き、Dev Containers拡張の **Reopen in Container** を実行できます。
+詳細は [Windows・Docker・Dev Containerの手順](techbook/README.md#利用環境の選び方) を参照してください。
+
+生成先は `techbook/build/main.pdf` です。`make clean`、`build.cmd clean`、または `docker compose run --rm tex make clean` で生成物を削除できます。
 PDFや補助ファイルはGit管理対象外です。
 
 表紙・はじめに・目次・サンプル2章・参考文献・あとがき・執筆者紹介・奥付を収録しています。

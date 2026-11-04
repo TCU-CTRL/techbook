@@ -1,0 +1,14 @@
+name: ctrl-techbook
+services:
+  tex:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ctrl-techbook:local
+    working_dir: /workspace/techbook
+    user: "${LOCAL_UID:-1000}:${LOCAL_GID:-1000}"
+    volumes:
+      - type: bind
+        source: .
+        target: /workspace/techbook
+    command: ["make", "pdf"]
