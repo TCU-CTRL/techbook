@@ -1,15 +1,25 @@
 \begin{titlepage}
-  \centering
-  \vspace*{18mm}
-  {\color{CoverAccent}\Huge\sffamily\bfseries \BookTitle\par}
+  \setlength{\parindent}{0pt}
+  \sffamily
+  \noindent{\small\bfseries \CircleName\hfill VOL.\ \BookIssue}\par
+  \vspace{5mm}
+  {\color{CoverAccent}\noindent\rule{\linewidth}{2pt}\par}
+  \vspace{17mm}
+  {\small\BookSeries\par}
+  \vspace{5mm}
+  {\color{CoverAccent}\fontsize{27pt}{36pt}\selectfont\bfseries
+    \raggedright\BookTitle\par}
+  \vspace{7mm}
+  {\large\raggedright\BookSubtitle\par}
   \vspace{10mm}
-  {\Large \BookSubtitle\par}
+  {\color{CoverAccent}\noindent\rule{9mm}{9mm}\hspace{3mm}%
+    \rule{4mm}{9mm}\hspace{3mm}\rule{1mm}{9mm}\par}
   \vfill
-  {\Large \CircleName\par}
-  \vspace{6mm}
-  \BookEvent\par
-  \BookDate\par
-  \vspace{10mm}
+  {\fontsize{52pt}{56pt}\selectfont\bfseries \BookIssue\par}
+  \vspace{3mm}
+  \noindent\rule{\linewidth}{0.4pt}\par
+  \vspace{4mm}
+  {\small\BookEvent\par\BookDate\par}
 \end{titlepage}
 % 両面印刷で表紙の裏を白紙にし、はじめにを右ページから始める。
 \clearpage

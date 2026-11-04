@@ -17,29 +17,60 @@
 \setlength{\parskip}{0pt}
 \setcounter{secnumdepth}{2}
 \setcounter{tocdepth}{2}
-\ModifyHeading{section}{font={\large\sffamily\bfseries}}
+% 小さな角形と細線を共通モチーフにする。本文には色を使わない。
+\definecolor{InkMuted}{gray}{0.38}
+\definecolor{PaperGray}{gray}{0.95}
+\definecolor{CoverAccent}{RGB}{28,66,100}
+\ModifyHeading{chapter}{
+  font={\fontsize{18pt}{25pt}\selectfont\sffamily\bfseries},
+  label_format={\thechapter},
+  format={\jlreqHeadingLabel{\noindent{\normalfont\small\sffamily
+    ARTICLE\ /\ \thechapter}\par\vspace{7pt}}\noindent#2\par\nobreak\vspace{6pt}
+    {\color{InkMuted}\hrule height0.6pt}},
+  before_space=8pt,after_space=8pt,pagestyle=plain}
+% 章番号を短くした分、目次の番号欄も詰める。
+\makeatletter
+\renewcommand*{\l@chapter}[2]{%
+  \par\addvspace{0.35\baselineskip}%
+  \@dottedtocline{0}{0pt}{2em}{{\sffamily\bfseries #1}}{#2}}
+\makeatother
+\ModifyHeading{section}{
+  font={\large\sffamily\bfseries},
+  format={{\color{InkMuted}\rule{3pt}{9pt}}\hspace{0.65em}#1#2}}
 \ModifyHeading{subsection}{font={\normalsize\sffamily\bfseries}}
 \NewPageStyle{techbook}{
   running_head_position=top-fore-edge,
-  odd_running_head=_chapter,even_running_head={\BookTitle},
+  odd_running_head=_chapter,even_running_head={\CircleName\ /\ VOL.\ \BookIssue},
   mark_format={_chapter={#1}},
-  running_head_font={\small},
-  nombre_position=bottom-fore-edge,nombre_font={\small}}
-% 章頭もページ番号を表示する。章見出し自体はjlreq標準を使う。
-\ModifyPageStyle{plain}{nombre_position=bottom-fore-edge}
+  running_head_font={\footnotesize\sffamily},
+  odd_head_format={\underline{\makebox[\jlreqyokoheadlength]{#1}}},
+  even_head_format={\underline{\makebox[\jlreqyokoheadlength]{#1}}},
+  nombre={\rule{3pt}{3pt}\hspace{0.7em}\thepage},
+  nombre_position=bottom-fore-edge,nombre_font={\small\sffamily}}
+% 記事冒頭は柱を省き、ノンブルは通常ページと揃える。
+\ModifyPageStyle{plain}{nombre_position=bottom-fore-edge,
+  nombre={\rule{3pt}{3pt}\hspace{0.7em}\thepage},nombre_font={\small\sffamily}}
 \newcommand{\chapterauthor}[1]{%
-  \begin{flushright}\small 執筆：#1\end{flushright}}
+  \noindent{\small\sffamily 執筆\quad #1}\par\vspace{0.7\baselineskip}}
+% 任意の短い記事紹介。本文・見出し設定は各章に書かない。
+\newcommand{\chapterlead}[1]{%
+  \begingroup\setlength{\fboxsep}{8pt}\noindent
+  \colorbox{PaperGray}{\parbox{\dimexpr\linewidth-2\fboxsep\relax}{%
+    \small\setlength{\parindent}{0pt}#1}}\par\endgroup
+  \vspace{0.6\baselineskip}}
 
 % 本文はモノクロ。表紙だけ色を使用できる。
-\definecolor{CoverAccent}{RGB}{28,66,100}
 \renewcommand{\lstlistingname}{コード}
 \lstset{
   language=Python,basicstyle=\small\ttfamily,
   keywordstyle=\normalfont\small\sffamily\bfseries,commentstyle=\itshape,stringstyle=\ttfamily,
-  numbers=left,numberstyle=\scriptsize,numbersep=8pt,
-  frame=single,breaklines=true,breakatwhitespace=false,
+  numbers=left,numberstyle=\scriptsize,numbersep=12pt,
+  backgroundcolor=\color{PaperGray},frame=leftline,
+  rulecolor=\color{InkMuted},framerule=0.8pt,framesep=5pt,
+  breaklines=true,breakatwhitespace=false,
   columns=fullflexible,keepspaces=true,showstringspaces=false,
-  tabsize=4,captionpos=b,xleftmargin=2em,framexleftmargin=0.5em,
+  tabsize=4,captionpos=b,xleftmargin=2em,xrightmargin=0.5em,
+  framexleftmargin=0.5em,
   aboveskip=\baselineskip,belowskip=\baselineskip}
 % listingsのコード内はASCII推奨。日本語の解説は本文・キャプションに書く。
 \theoremstyle{definition}
