@@ -78,9 +78,38 @@ PDFや補助ファイルはGit管理対象外です。
 
 ## 共同執筆の進め方
 
-1. 担当する章と記事のテーマを部内で決めます。
-2. 作業用ブランチで原稿と画像を追加します。
-3. PDFを生成して紙面を確認します。
-4. Pull Requestで内容と組版をレビューします。
+このリポジトリは制作環境のひな型として残し、実際に出版する本は `TCU-CTRL/techbook-vol01` などの別リポジトリで管理する運用をおすすめします。
+同じ本を執筆する部員ごとのforkは不要です。
+
+### 編集担当者：本のリポジトリを用意する
+
+1. 管理者がこのリポジトリの **Settings → General → Template repository** を有効にします。2026年11月4日時点では無効のため、最初の一度だけ設定が必要です。
+2. リポジトリ上部の **Use this template → Create a new repository** を選びます。
+3. Ownerを **TCU-CTRL**、名前を例として **techbook-vol01** にし、未公開原稿を扱う場合は **Private** で作成します。通常は既定ブランチだけをコピーします。
+4. 参加部員のTeamなどに、本のリポジトリへの **Write** 権限を付与します。Organizationの既定権限がある場合は、その設定も確認します。
+5. 本のリポジトリで `techbook/metadata.tex` の書名・号数・発行情報を設定し、担当章と記事のテーマを決めます。サンプル原稿・プロフィールは実際の内容に差し替えます。
+
+**Use this templateで作った本は、制作環境とは独立した履歴を持ちます。** テンプレート側の更新は自動反映されないので、必要な設定変更を選んで取り込んでください。
+すでに一冊の制作に使うことを決めたリポジトリがある場合は、その中でそのまま共同執筆しても構いません。
+
+### 各部員：cloneして担当章を執筆する
+
+以下は、新しく作った本のリポジトリを使う例です。`techbook-vol01` は実際の名前に読み替えてください。
+
+```sh
+git clone https://github.com/TCU-CTRL/techbook-vol01.git
+cd techbook-vol01
+git switch -c writing/chapter03
+```
+
+1. `techbook/chapters/` に担当章の原稿を追加し、画像は章ごとに分けて保存します。
+2. 利用環境に合った方法でPDFを生成して紙面を確認します。
+3. 自分のブランチを本のリポジトリへpushし、`main` 向けのPull Requestを作成します。
+4. 別の部員が記事の内容と組版をレビューし、編集担当者が取り込みます。
+
+章の登録や共有設定の変更は編集担当者と調整します。部員同士で同じ本へPRを出すときは、各自が同じリポジトリ内にブランチを作ります。
+具体的なcommit・push・ビルドの例は [執筆ガイドの共同執筆手順](techbook/README.md#gitによる共同執筆) を参照してください。
+
+公式の手順：[テンプレートの設定](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-template-repository)、[テンプレートから本のリポジトリを作成](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template)。
 
 発行日、正式な書名、印刷会社、入稿仕様は今後確定します。

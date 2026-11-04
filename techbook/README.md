@@ -347,15 +347,19 @@ Web資料はURLと参照日も記載します。引用文は `quote` 環境で�
 
 ## Gitによる共同執筆
 
-共同執筆には `TCU-CTRL/techbook` リポジトリを使用します。
+制作環境のひな型は `TCU-CTRL/techbook` に置き、実際の原稿はテンプレートから作成した `TCU-CTRL/techbook-vol01` などの本ごとのリポジトリで管理する運用をおすすめします。
+初回のテンプレート設定・リポジトリ作成・部員への権限付与は [ルートREADMEの共同執筆手順](../README.md#共同執筆の進め方) を参照してください。
+同じ本の執筆ではforkせず、各部員がその本のリポジトリをcloneして、担当章のブランチからPRを出します。
 担当章と画像だけを各部員が編集し、章の登録・共有設定・参考文献の競合は編集担当者が調整します。
-以下は部員が今後作業するための例です。
+以下は本のリポジトリをcloneした後、そのルートで実行する例です。
 
 ```sh
 git switch -c writing/chapter03
 # 原稿と画像を編集
 cd techbook
 make pdf
+# Windowsのコマンドプロンプトでは build.cmd pdf
+# Dockerでは docker compose run --rm tex
 cd ..
 git diff --check
 git diff -- techbook/
@@ -365,6 +369,7 @@ git push -u origin writing/chapter03
 ```
 
 GitHubでPull Requestを作成し、別の部員が内容・ビルド結果を確認します。
+PRの作成先は、ひな型ではなく、その本のリポジトリです。
 mainへ直接pushせず、部の運用ルールに従って取り込んでください。
 文や意味のまとまりでソースを改行すると差分を読みやすくできます。
 作業開始時には変更を保存して既定ブランチの更新を取り込みます。競合時に他人の章を丸ごと上書きしないでください。
