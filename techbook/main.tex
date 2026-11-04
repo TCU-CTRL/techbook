@@ -1,0 +1,29 @@
+% 共通の版面・印刷設定は layout.tex、本文スタイルは preamble.tex。
+\input{layout}
+\documentclass[book,lualatex]{jlreq}
+\input{metadata}
+\input{preamble}
+
+\begin{document}
+\hypersetup{pageanchor=false}
+\input{frontmatter/cover}
+\frontmatter
+\pagenumbering{roman}
+\hypersetup{pageanchor=true}
+\pagestyle{techbook}
+\input{frontmatter/preface}
+\tableofcontents
+
+\mainmatter
+\pagestyle{techbook}
+% 章を増やすときは、この一覧に \input を追加する。
+\input{chapters/chapter01}
+\input{chapters/chapter02}
+
+\input{backmatter/references}
+\backmatter
+\pagestyle{techbook}
+\input{backmatter/afterword}
+\input{frontmatter/contributors}
+\input{backmatter/colophon}
+\end{document}

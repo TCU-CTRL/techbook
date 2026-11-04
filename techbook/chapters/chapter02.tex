@@ -1,0 +1,47 @@
+\chapter{アルゴリズムと数式}
+\label{chap:algorithm}
+\chapterauthor{\AuthorTwo}
+
+\section{総和を数式で表す}
+第\ref{chap:python}章の処理は、インライン数式 $S_n=1+2+\cdots+n$ で表せます。
+\begin{definition}[三角数]
+  正の整数 $n$ に対し、$T_n=\sum_{k=1}^{n}k$ を第$n$三角数と呼びます。
+\end{definition}
+\begin{theorem}
+  三角数は次の式で求められます。
+  \begin{equation}
+    T_n=\frac{n(n+1)}{2}.
+    \label{eq:triangular}
+  \end{equation}
+\end{theorem}
+\begin{proof}
+  同じ和を逆順にも並べて加えると、各組の和は $n+1$ です。
+  \begin{align}
+    2T_n &= (1+n)+(2+(n-1))+\cdots+(n+1) \\
+         &= n(n+1).
+  \end{align}
+  両辺を2で割れば式\eqref{eq:triangular}を得ます。
+\end{proof}
+番号を付けない別行立て数式も利用できます。
+\[
+  T_5=\frac{5\cdot6}{2}=15
+\]
+
+\section{処理の流れを図にする}
+図\ref{fig:flow}はLaTeXの枠と矢印だけで作った図です。
+\begin{figure}[htbp]
+  \centering
+  \fbox{入力：$n$}\enspace$\longrightarrow$\enspace
+  \fbox{計算：$n(n+1)/2$}\enspace$\longrightarrow$\enspace
+  \fbox{出力：$T_n$}
+  \caption{三角数を求める処理の流れ}
+  \label{fig:flow}
+\end{figure}
+
+\subsection{参考資料を示す}
+数式を説明するときも、出典を明示しましょう。
+本書の日本語組版にはjlreq\cite{ref:jlreq}を使用しています。
+\begin{quote}
+  ここには引用文を記載し、出典と該当ページを添えます。
+  この文章自体は引用の書式を示すための例文です。
+\end{quote}

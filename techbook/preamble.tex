@@ -1,0 +1,49 @@
+% OS固有のフォントに依存しないTeX Live収録フォント。
+\usepackage[haranoaji]{luatexja-preset}
+\usepackage{fontspec}
+\setmainfont{Latin Modern Roman}
+\setsansfont{Latin Modern Sans}
+\setmonofont{Latin Modern Mono}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{graphicx,booktabs}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{url}
+\usepackage[unicode,hidelinks]{hyperref}
+\hypersetup{pdftitle={\BookTitle},pdfauthor={\CircleName}}
+\graphicspath{{images/}}
+
+\setlength{\parindent}{1\zw}
+\setlength{\parskip}{0pt}
+\setcounter{secnumdepth}{2}
+\setcounter{tocdepth}{2}
+\ModifyHeading{section}{font={\large\sffamily\bfseries}}
+\ModifyHeading{subsection}{font={\normalsize\sffamily\bfseries}}
+\NewPageStyle{techbook}{
+  running_head_position=top-fore-edge,
+  odd_running_head=_chapter,even_running_head={\BookTitle},
+  mark_format={_chapter={#1}},
+  running_head_font={\small},
+  nombre_position=bottom-fore-edge,nombre_font={\small}}
+% 章頭もページ番号を表示する。章見出し自体はjlreq標準を使う。
+\ModifyPageStyle{plain}{nombre_position=bottom-fore-edge}
+\newcommand{\chapterauthor}[1]{%
+  \begin{flushright}\small 執筆：#1\end{flushright}}
+
+% 本文はモノクロ。表紙だけ色を使用できる。
+\definecolor{CoverAccent}{RGB}{28,66,100}
+\renewcommand{\lstlistingname}{コード}
+\lstset{
+  language=Python,basicstyle=\small\ttfamily,
+  keywordstyle=\normalfont\small\sffamily\bfseries,commentstyle=\itshape,stringstyle=\ttfamily,
+  numbers=left,numberstyle=\scriptsize,numbersep=8pt,
+  frame=single,breaklines=true,breakatwhitespace=false,
+  columns=fullflexible,keepspaces=true,showstringspaces=false,
+  tabsize=4,captionpos=b,xleftmargin=2em,framexleftmargin=0.5em,
+  aboveskip=\baselineskip,belowskip=\baselineskip}
+% listingsのコード内はASCII推奨。日本語の解説は本文・キャプションに書く。
+\theoremstyle{definition}
+\newtheorem{definition}{定義}[chapter]
+\theoremstyle{plain}
+\newtheorem{theorem}{定理}[chapter]
+\renewcommand{\proofname}{証明}
