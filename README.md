@@ -58,11 +58,17 @@ PDFや補助ファイルはGit管理対象外です。
 サンプル原稿から生成したA5判・1段組の紙面です。記事タイトル・著者名・紹介文をまとめた冒頭と、モノクロの見出し・コード欄を共通デザインにしています。
 日本語の本文、行番号付きのPythonコード、数式・定理の組版を確認できます。
 
+| 表紙 | 目次 |
+| --- | --- |
+| ![表紙](docs/screenshots/01-cover.png) | ![目次](docs/screenshots/02-contents.png) |
+
 | Pythonコード | 数式・定理 |
 | --- | --- |
 | ![Pythonコードの紙面](docs/screenshots/03-python.png) | ![数式・定理の紙面](docs/screenshots/05-math.png) |
 
-[表紙・目次・図表などの画像一覧](docs/screenshots/)
+| 表 | 図・参考文献 |
+| --- | --- |
+| ![表の紙面](docs/screenshots/04-table.png) | ![図と参考文献の紙面](docs/screenshots/06-figure-and-references.png) |
 
 ## 共同執筆の進め方
 
